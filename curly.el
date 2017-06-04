@@ -26,11 +26,70 @@
 
 ;;; Commentary:
 ;;
+;; @ - absolute path to the current project
+;; # - absolute path to the current directory
+;; % - absolute path to the current file
+;;
+;; p - project's root directory name
+;; d - relative path to the current directory
+;; f - relative path to the current file
+;;
+;; l - line number
+;; c - column number
+;; t - point number
 ;;
 ;; ### Usage
 ;;
 
 ;;; Code:
+
+(defgroup curly nil
+  "Straight way to work with current file locations."
+  :prefix "curly-"
+  :group 'applications)
+
+(defconst curly-version "0.1.0")
+
+(cl-defun curly-expand (input)
+  (apply 'concat
+         (mapcar 'curly-expand-token (string-to-list input))))
+
+(cl-defun curly-expand-token (token)
+  (case token
+    (?@ (curly-absolute-project-path))
+    (?$ (curly-absolute-dir-path))
+    (?% (curly-absolute-file-path))
+    (?p (curly-project-dir-name))
+    (?d (curly-relative-directory-path))
+    (?f (curly-relative-file-path))
+    (?l (int-to-string (line-number-at-pos)))
+    (?c (int-to-string (current-column)))
+    (?t (int-to-string (point)))
+    (otherwise (char-to-string token))))
+
+(cl-defun curly-absolute-project-path ()
+  (projectile-project-root))
+
+(cl-defun curly-absolute-dir-path ()
+  default-directory)
+
+(cl-defun curly-absolute-file-path ()
+  (buffer-file-name))
+
+(cl-defun curly-project-dir-name ()
+  (file-name-nondirectory
+   (directory-file-name
+    (curly-absolute-dir-path))))
+
+(cl-defun curly-relative-directory-path ()
+  (curly-strip-project-path (curly-absolute-dir-path)))
+
+(cl-defun curly-relative-file-path ()
+  (curly-strip-project-path (curly-absolute-file-path)))
+
+(cl-defun curly-strip-project-path (absolute-path)
+  (s-replace
+   (curly-absolute-project-path) "" absolute-path))
 
 (provide 'curly)
 ;;; curly.el ends here
