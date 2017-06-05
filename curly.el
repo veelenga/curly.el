@@ -120,6 +120,7 @@
   (apply 'concat
          (mapcar 'curly-expand-token (string-to-list input))))
 
+;;;###autoload
 (defun curly-copy-loc (input)
   "Format and copy file location based on user INPUT."
   (interactive (curly-read-input))
