@@ -5,7 +5,7 @@
 ;; URL: https://github.com/veelenga/curly.el
 ;; Keywords: convenience
 ;; Version: 0.1.0
-;; Package-Requires: ((emacs "24.4") (dash "2.12.0"))
+;; Package-Requires: ((emacs "24.4") (projectile "0.14.0"))
 
 ;; This file is not part of GNU Emacs.
 
@@ -26,22 +26,36 @@
 
 ;;; Commentary:
 ;;
-;; @ - absolute path to the current project
-;; # - absolute path to the current directory
-;; % - absolute path to the current file
+;; https://github.com/veelenga/bin/blob/master/curly.el/logo.png
 ;;
-;; p - project's root directory name
-;; d - relative path to the current directory
-;; f - relative path to the current file
-;;
-;; l - line number
-;; c - column number
-;; t - point number
+;; Simple plugin that can format and copy file location based on the available locators.
 ;;
 ;; ### Usage
 ;;
-
+;; Run interactive function `curly-copy-loc` to create and copy file location you need.
+;;
+;; Available locators:
+;;
+;;  * `@` - absolute path to the current project
+;;  * `#` - absolute path to the current directory
+;;  * `%` - absolute path to the current file
+;;
+;;  * `p` - project's root directory name
+;;  * `d` - relative path to the current directory
+;;  * `f` - relative path to the current file
+;;
+;;  * `l` - line number
+;;  * `c` - column number
+;;  * `t` - point number
+;;
+;; For example, if you need to copy a relative path to the current file with a line
+;; number, use `(curly-copy-loc "f:l")`
+;;
 ;;; Code:
+
+(eval-when-compile
+  (require 'cl-lib)
+  (require 'project))
 
 (defgroup curly nil
   "Straight way to work with current file locations."
@@ -49,10 +63,6 @@
   :group 'applications)
 
 (defconst curly-version "0.1.0")
-
-(cl-defun curly-expand (input)
-  (apply 'concat
-         (mapcar 'curly-expand-token (string-to-list input))))
 
 (cl-defun curly-expand-token (token)
   (case token
@@ -90,6 +100,32 @@
 (cl-defun curly-strip-project-path (absolute-path)
   (s-replace
    (curly-absolute-project-path) "" absolute-path))
+
+(cl-defun curly-read-input ()
+  (list (read-string "
+  Format a location using locators:
+
+    @/p - absolute/relative path to the current project
+    #/d - absolute/relative path to the current directory
+    %/f - absolute/relative path to the current file
+
+    l/c/t - line/column/point number
+
+    i.e. 'd/f:l'
+
+    Enter your input: ")))
+
+(defun curly-expand (input)
+  "Expand INPUT using file locators."
+  (apply 'concat
+         (mapcar 'curly-expand-token (string-to-list input))))
+
+(defun curly-copy-loc (input)
+  "Format and copy file location based on user INPUT."
+  (interactive (curly-read-input))
+  (let ((loc (curly-expand input)))
+    (message (kill-new loc))))
+
 
 (provide 'curly)
 ;;; curly.el ends here
