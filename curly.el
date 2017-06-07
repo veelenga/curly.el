@@ -55,7 +55,7 @@
 
 (eval-when-compile
   (require 'cl-lib)
-  (require 'project))
+  (require 'projectile))
 
 (defgroup curly nil
   "Straight way to work with current file locations."
@@ -67,7 +67,7 @@
 (cl-defun curly-expand-token (token)
   (case token
     (?@ (curly-absolute-project-path))
-    (?$ (curly-absolute-dir-path))
+    (?# (curly-absolute-dir-path))
     (?% (curly-absolute-file-path))
     (?p (curly-project-dir-name))
     (?d (curly-relative-directory-path))
@@ -84,12 +84,12 @@
   default-directory)
 
 (cl-defun curly-absolute-file-path ()
-  (buffer-file-name))
+  (or (buffer-file-name) ""))
 
 (cl-defun curly-project-dir-name ()
   (file-name-nondirectory
    (directory-file-name
-    (curly-absolute-dir-path))))
+    (curly-absolute-project-path))))
 
 (cl-defun curly-relative-directory-path ()
   (curly-strip-project-path (curly-absolute-dir-path)))
@@ -98,7 +98,7 @@
   (curly-strip-project-path (curly-absolute-file-path)))
 
 (cl-defun curly-strip-project-path (absolute-path)
-  (s-replace
+  (replace-regexp-in-string
    (curly-absolute-project-path) "" absolute-path))
 
 (cl-defun curly-read-input ()

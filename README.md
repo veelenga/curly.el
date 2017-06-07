@@ -3,6 +3,7 @@
 
 ---
 [![License GPLv3](https://img.shields.io/badge/license-GPL_v3-green.svg)](http://www.gnu.org/licenses/gpl-3.0.html)
+[![Build Status](https://travis-ci.org/veelenga/curly.el.svg?branch=master)](https://travis-ci.org/veelenga/curly.el)
 
 <img src="https://github.com/veelenga/bin/blob/master/curly.el/logo.png">
 
