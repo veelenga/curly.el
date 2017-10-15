@@ -11,7 +11,7 @@ Simple plugin that can format and copy file location based on the available loca
 
 ### Usage
 
-Run interactive function `curly-copy-loc` to create and copy file location you need.
+Run the interactive function `curly-copy-loc` to create and copy file location you need.
 
 Available locators:
 
