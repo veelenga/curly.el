@@ -65,7 +65,7 @@
 (defconst curly-version "0.1.0")
 
 (cl-defun curly-expand-token (token)
-  (case token
+  (cl-case token
     (?@ (curly-absolute-project-path))
     (?# (curly-absolute-dir-path))
     (?% (curly-absolute-file-path))
