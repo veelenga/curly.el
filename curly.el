@@ -1,4 +1,4 @@
-;;; curly.el --- Straight way to work with current file locations.
+;;; curly.el --- Straight way to work with current file locations. -*- lexical-binding: t; -*-
 
 ;; Copyright © 2017 Vitalii Elenhaupt <velenhaupt@gmail.com>
 ;; Author: Vitalii Elenhaupt
