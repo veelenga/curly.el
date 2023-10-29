@@ -125,8 +125,8 @@
   "Format and copy file location based on user INPUT."
   (interactive (curly-read-input))
   (let ((loc (curly-expand input)))
-    (message (kill-new loc))))
-
+    (kill-new loc)
+    (message loc)))
 
 (provide 'curly)
 ;;; curly.el ends here
